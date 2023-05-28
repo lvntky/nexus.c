@@ -4,7 +4,7 @@ Simple and tiny Web Server implemented in... Yes. You guessed it right, in C.
 It provides a basic foundation for hosting web applications and serving static content. The server is designed to be easy to understand and modify. The purpose of this project was to learn something about webserver and network programming in C in one day and have fun :)
 
 ## Todo
-[ ] Make it Concurrent
+[] Make it Concurrent
 
 ## Features
 * Implements a basic HTTP/1.1 server
