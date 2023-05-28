@@ -4,7 +4,7 @@ Simple and tiny Web Server implemented in... Yes. You guessed it right, in C.
 It provides a basic foundation for hosting web applications and serving static content. The server is designed to be easy to understand and modify. The purpose of this project was to learn something about webserver and network programming in C in one day and have fun :)
 
 ## Todo
-[] Make it Concurrent
+- [ ] Make it Concurrent
 
 ## Features
 * Implements a basic HTTP/1.1 server
@@ -38,9 +38,9 @@ cmake ./
 
 ## Configuration
 You can modify the server's behavior by adjusting the values in the config.h file. Here are some options you might want to customize:
-[ ]  `PORT`: The port number the server listens on (default: 8080).
-[ ]  `THREAD_POOL_SIZE`: The maximum number of threads that handle incoming requests 
-[ ]  `WEB_ROOT`: The directory where the server looks for static files (default: "./public").
+- [ ]  `PORT`: The port number the server listens on (default: 8080).
+- [ ]  `THREAD_POOL_SIZE`: The maximum number of threads that handle incoming requests 
+- [ ]  `WEB_ROOT`: The directory where the server looks for static files (default: "./public").
 
 ## Contributing
 Contributions are welcome! If you find any bugs or have suggestions for improvements, please open an issue or submit a pull request. Make sure to follow the existing coding style and provide appropriate test coverage.
