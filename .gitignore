@@ -1,3 +1,7 @@
+build/
+debug/
+bin/
+
 ### C ###
 # Prerequisites
 *.d
