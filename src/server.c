@@ -74,9 +74,11 @@ void print_server_banner()
 		perror("Can't open server banner file");
 	}
 	char c;
+	printf("\n");
 	while ((c = fgetc(banner_fp)) != EOF) {
 		printf("%c", c);
 	}
+	printf("\n");
 	fclose(banner_fp);
 }
 
