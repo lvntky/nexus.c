@@ -1,6 +1,7 @@
-#ifndef  __CONFIG_H__
-#define  __CONFIG_H__
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
 
-const int PORT = 8080;
+#include "clogger.h"
 
+#define PORT 8080
 #endif
