@@ -3,5 +3,5 @@
 
 #include "clogger.h"
 
-#define PORT 8080
+#define PORT 3408
 #endif
