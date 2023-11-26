@@ -4,8 +4,6 @@
 #include "server.h"
 #include "config.h"
 
-#define MAX_BANNER_LEN 128
-
 void nexus_banner_print();
 
 #endif

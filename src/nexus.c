@@ -12,12 +12,15 @@ int main()
 
 void nexus_banner_print()
 {
-	FILE *bannerfp =
-		fopen("/home/levent/Projects/nexus.c/static_content", "r");
-
-	char banner_line[MAX_BANNER_LEN];
-	while (fgets(banner_line, sizeof(banner_line), bannerfp) != NULL) {
-		printf("%s", banner_line);
+	FILE *banner_fp = fopen("static_content/banner.txt", "r");
+	if (banner_fp == NULL) {
+		perror("Error opening file");
+		return;
 	}
-	fclose(bannerfp);
+	char c;
+	while ((c = fgetc(banner_fp)) != EOF) {
+		putchar(c);
+	}
+
+	fclose(banner_fp);
 }
