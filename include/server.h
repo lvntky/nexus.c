@@ -1,5 +1,5 @@
-#ifndef _TCP_H_
-#define _TCP_H_
+#ifndef _SERVER_H_
+#define _SERVER_H_
 
 #include <sys/socket.h>
 #include <stdio.h>
