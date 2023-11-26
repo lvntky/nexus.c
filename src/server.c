@@ -19,7 +19,7 @@ void server_start()
 	struct sockaddr_in sockaddr;
 
 	sockaddr.sin_family = AF_INET;
-	sockaddr.sin_port = PORT;
+	sockaddr.sin_port = htons(PORT);
 	sockaddr.sin_addr.s_addr = INADDR_ANY;
 
 	socklen_t addr_len = sizeof(sockaddr);
@@ -63,6 +63,7 @@ void server_start()
 	int read_status = read(new_connection_on_socket, server_read_buffer,
 			       (MAX_SOCKET_BUFFER_LEN - 1));
 	LOG_INFO("Read status from client connection %d", read_status);
+	LOG_OK("CLIENT REQUEST: %s", server_read_buffer);
 }
 
 void print_server_banner()
