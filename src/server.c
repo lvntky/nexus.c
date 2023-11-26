@@ -31,7 +31,7 @@ void server_start()
 		 sizeof(sockaddr)) < 0) {
 		perror("Can't bind the server socket");
 	} else {
-		LOG_INFO("Server bind port: %d", sockaddr.sin_port);
+		LOG_INFO("Server bind port: %d", ntohs(sockaddr.sin_port));
 		LOG_INFO("Server bind address: %d", sockaddr.sin_addr.s_addr);
 	}
 
