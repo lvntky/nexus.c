@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 // server main
 
@@ -30,6 +31,7 @@ void server_start()
 	if (bind(server_socket_fd, (const struct sockaddr *)&sockaddr,
 		 sizeof(sockaddr)) < 0) {
 		perror("Can't bind the server socket");
+		exit(1);
 	} else {
 		LOG_INFO("Server bind port: %d", ntohs(sockaddr.sin_port));
 		LOG_INFO("Server bind address: %d", sockaddr.sin_addr.s_addr);
@@ -46,36 +48,40 @@ void server_start()
 		       server_socket_fd);
 	}
 
-	int new_connection_on_socket = 0;
-	if ((new_connection_on_socket = accept(server_socket_fd,
-					       (struct sockaddr *)&sockaddr,
-					       &addr_len)) < 0) {
-		perror("Server can't accept new connection");
-	}
+	while (1) {
+		int new_connection_on_socket = 0;
+		if ((new_connection_on_socket = accept(
+			     server_socket_fd, (struct sockaddr *)&sockaddr,
+			     &addr_len)) < 0) {
+			perror("Server can't accept new connection");
+		}
 
-	/*
+		/*
      * Read from the coming connection
      * save to buffer
      */
-	char server_read_buffer[MAX_SOCKET_BUFFER_LEN];
+		char server_read_buffer[MAX_SOCKET_BUFFER_LEN];
 
-	memset(server_read_buffer, 0, MAX_SOCKET_BUFFER_LEN);
-	int read_status = read(new_connection_on_socket, server_read_buffer,
-			       (MAX_SOCKET_BUFFER_LEN - 1));
-	LOG_INFO("Read status from client connection %d", read_status);
-	LOG_OK("CLIENT REQUEST:\n%s\n", server_read_buffer);
+		memset(server_read_buffer, 0, MAX_SOCKET_BUFFER_LEN);
+		int read_status = read(new_connection_on_socket,
+				       server_read_buffer,
+				       (MAX_SOCKET_BUFFER_LEN - 1));
+		LOG_INFO("Read status from client connection %d", read_status);
+		LOG_OK("CLIENT REQUEST:\n%s\n", server_read_buffer);
 
-	request_type_t request_header = request_get_type(server_read_buffer);
+		request_type_t request_header =
+			request_get_type(server_read_buffer);
 
-	LOG_INFO("Method Header: %d", request_header);
+		LOG_INFO("Method Header: %d", request_header);
 
-	if (request_header == GET) {
-		char *server_get_response = response_get();
-		send(new_connection_on_socket, server_get_response,
-		     strlen(server_get_response), 0);
+		if (request_header == GET) {
+			char *server_get_response = response_get();
+			send(new_connection_on_socket, server_get_response,
+			     strlen(server_get_response), 0);
+		}
+
+		close(new_connection_on_socket);
 	}
-
-	close(new_connection_on_socket);
 	close(server_socket_fd);
 }
 
