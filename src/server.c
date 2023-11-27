@@ -70,12 +70,16 @@ void server_start()
 		LOG_OK("CLIENT REQUEST:\n%s\n", server_read_buffer);
 
 		request_type_t request_header =
-			request_get_type(server_read_buffer);
+			request_method_type(server_read_buffer);
 
 		LOG_INFO("Method Header: %d", request_header);
 
 		if (request_header == GET) {
 			char *server_get_response = response_get();
+
+			LOG_INFO(
+				"Requested File :%s",
+				request_get_requested_file(server_read_buffer));
 			send(new_connection_on_socket, server_get_response,
 			     strlen(server_get_response), 0);
 		}
