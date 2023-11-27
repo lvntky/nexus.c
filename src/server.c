@@ -63,7 +63,20 @@ void server_start()
 	int read_status = read(new_connection_on_socket, server_read_buffer,
 			       (MAX_SOCKET_BUFFER_LEN - 1));
 	LOG_INFO("Read status from client connection %d", read_status);
-	LOG_OK("CLIENT REQUEST: %s", server_read_buffer);
+	LOG_OK("CLIENT REQUEST:\n%s\n", server_read_buffer);
+
+	request_type_t request_header = request_get_type(server_read_buffer);
+
+	LOG_INFO("Method Header: %d", request_header);
+
+	if (request_header == GET) {
+		char *server_get_response = response_get();
+		send(new_connection_on_socket, server_get_response,
+		     strlen(server_get_response), 0);
+	}
+
+	close(new_connection_on_socket);
+	close(server_socket_fd);
 }
 
 void print_server_banner()

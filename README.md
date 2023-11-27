@@ -52,3 +52,4 @@ This project is licensed under the MIT License.
 * [HTTP Server: Everything you need to know to Build a simple HTTP server from scratch](https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa)
 * [HTTP RFC](https://datatracker.ietf.org/doc/html/rfc2616)
 * Micheal Kerrisk - The Linux Progrraming Interface, Ninth Printing ed.
+* [Time Wait State](http://www.softlab.ntua.gr/facilities/documentation/unix/unix-socket-faq/unix-socket-faq-2.html#time_wait)
