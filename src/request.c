@@ -23,7 +23,7 @@ int request_method_type(char *buffer)
 //TODO: Refactor needed
 char *request_get_requested_file(char *buffer)
 {
-	int start_offset = 1;
+	int start_offset = 0;
 	int end_offset = 0;
 	for (int i = 0; buffer[i] != '/'; i++) {
 		start_offset++;
@@ -33,7 +33,7 @@ char *request_get_requested_file(char *buffer)
 	}
 	char *req_file_name = (char *)malloc(end_offset);
 	strncpy(req_file_name, buffer + start_offset, end_offset);
-	req_file_name[end_offset + 1] = '\0';
+	req_file_name[end_offset] = '\0';
 
 	return req_file_name;
 }

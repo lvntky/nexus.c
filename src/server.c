@@ -19,6 +19,10 @@ void server_start()
 	int server_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 	struct sockaddr_in sockaddr;
 
+	int option = 1;
+	setsockopt(server_socket_fd, SOL_SOCKET, SO_REUSEADDR, &option,
+		   sizeof(option));
+
 	sockaddr.sin_family = AF_INET;
 	sockaddr.sin_port = htons(PORT);
 	sockaddr.sin_addr.s_addr = INADDR_ANY;
@@ -75,11 +79,13 @@ void server_start()
 		LOG_INFO("Method Header: %d", request_header);
 
 		if (request_header == GET) {
-			char *server_get_response = response_get();
+			char *requested_file =
+				request_get_requested_file(server_read_buffer);
 
-			LOG_INFO(
-				"Requested File :%s",
-				request_get_requested_file(server_read_buffer));
+			char *server_get_response =
+				response_get(requested_file);
+
+			LOG_INFO("Requested File :%s", requested_file);
 			send(new_connection_on_socket, server_get_response,
 			     strlen(server_get_response), 0);
 		}
