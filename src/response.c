@@ -90,14 +90,17 @@ char *response_get(char *requested_file)
 	}
 
 	// Construct HTTP headers
-	sprintf(http_response, "HTTP/1.1 200 OK\r\nContent-Type: %s\r\n\r\n",
-		content_type);
+	sprintf(http_response,
+		"HTTP/1.1 200 OK\r\nContent-Type: %s\r\nContent-Length: %zu\r\n\r\n",
+		content_type, file_size);
 
 	// Copy binary data into response buffer
 	memcpy(http_response + strlen(http_response), response_data, file_size);
 
 	free(response_data);
 	free(total_path);
+
+	LOG_INFO("RESPONSE: %s", http_response);
 
 	return http_response;
 }
