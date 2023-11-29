@@ -13,83 +13,9 @@ char *get_filename_ext(const char *filename)
 	return dot + 1;
 }
 
-char *response_get(char *requested_file)
+char *construct_reponse(char *http_response, char *content_type,
+			size_t file_size, char *response_data)
 {
-	if (strcmp(requested_file, "/favicon.ico") == 0) {
-		return NULL;
-	}
-
-	char *response_data;
-	char *total_path = malloc(1024);
-	sprintf(total_path, "static_content%s", requested_file);
-
-	if (strcmp(requested_file, "/") == 0) {
-		strcpy(total_path, "static_content/index.html");
-	}
-
-	FILE *file_fp = fopen(total_path, "rb"); // Open the file in binary mode
-	LOG_ERROR("FULL PATH: %s", total_path);
-	if (file_fp == NULL) {
-		free(total_path);
-		return ":( CANT FOUND IT :(";
-	}
-
-	fseek(file_fp, 0, SEEK_END);
-	size_t file_size = ftell(file_fp);
-	rewind(file_fp);
-
-	response_data = malloc(file_size);
-	if (response_data == NULL) {
-		// Handle memory allocation error
-		fclose(file_fp);
-		free(total_path);
-		return NULL;
-	}
-
-	// Initialize the buffer to zero to avoid garbage values
-	memset(response_data, 0, file_size);
-
-	size_t read_size = fread(response_data, 1, file_size, file_fp);
-	if (read_size != file_size) {
-		// Handle read error
-		fclose(file_fp);
-		free(response_data);
-		free(total_path);
-		return NULL;
-	}
-
-	fclose(file_fp);
-
-	// Print the first few bytes of data for debugging
-	LOG_ERROR("First few bytes of data: %02X %02X %02X %02X",
-		  (unsigned char)response_data[0],
-		  (unsigned char)response_data[1],
-		  (unsigned char)response_data[2],
-		  (unsigned char)response_data[3]);
-
-	// Construct response
-	char *content_type;
-	char *extension = get_filename_ext(requested_file);
-
-	if (strcmp(extension, "jpg") == 0 || strcmp(extension, "jpeg") == 0) {
-		content_type = "image/jpeg";
-	} else {
-		content_type = "text/html";
-	}
-
-	LOG_ERROR("File Size: %zu", file_size);
-	LOG_ERROR("Content Type: %s", content_type);
-
-	// Allocate space for the response, including headers
-	char *http_response = malloc(file_size + 200);
-	if (http_response == NULL) {
-		// Handle memory allocation error
-		free(response_data);
-		free(total_path);
-		return NULL;
-	}
-
-	// Construct HTTP headers
 	sprintf(http_response,
 		"HTTP/1.1 200 OK\r\nContent-Type: %s\r\nContent-Length: %zu\r\n\r\n",
 		content_type, file_size);
@@ -97,10 +23,76 @@ char *response_get(char *requested_file)
 	// Copy binary data into response buffer
 	memcpy(http_response + strlen(http_response), response_data, file_size);
 
-	free(response_data);
-	free(total_path);
-
-	LOG_INFO("RESPONSE: %s", http_response);
-
 	return http_response;
+}
+
+char *response_get(char *requested_file)
+{
+	char *http_response;
+	size_t file_size;
+	char *response_data;
+	char *content_type;
+
+	char *full_file_path = malloc(strlen(requested_file) + 1);
+
+	if (strcmp(requested_file, "favicon.ico") == 0) {
+		return NULL;
+	}
+	if (strcmp(requested_file, "/") == 0) {
+		full_file_path = "static_content/index.html";
+	} else {
+		sprintf(full_file_path, "%s%s", "static_content",
+			requested_file);
+	}
+
+	if (strcmp(get_filename_ext(requested_file), "jpg") == 0) {
+		content_type = malloc(strlen("image/jpg"));
+		content_type = "image/jpeg";
+	} else {
+		content_type = malloc(strlen("text/html"));
+		content_type = "text/html";
+	}
+
+	FILE *reqfile_fp = fopen(full_file_path, "rb");
+	if (reqfile_fp == NULL) {
+		return "404 :')";
+	}
+
+	fseek(reqfile_fp, 0, SEEK_END);
+	file_size = ftell(reqfile_fp);
+	rewind(reqfile_fp);
+
+	response_data = malloc(file_size);
+	if (response_data == NULL) {
+		// Handle memory allocation error
+		fclose(reqfile_fp);
+		free(full_file_path);
+		return NULL;
+	}
+
+	// Initialize the buffer to zero to avoid garbage values
+	memset(response_data, 0, file_size);
+
+	size_t read_size = fread(response_data, 1, file_size, reqfile_fp);
+	if (read_size != file_size) {
+		// Handle read error
+		fclose(reqfile_fp);
+		free(response_data);
+		free(full_file_path);
+		return NULL;
+	}
+
+	fclose(reqfile_fp);
+	http_response = malloc(file_size + 256);
+	if (http_response == NULL) {
+		// Handle memory allocation error
+		free(response_data);
+		free(full_file_path);
+		return NULL;
+	}
+
+	LOG_INFO("Content-type: %s", content_type);
+
+	return construct_reponse(http_response, content_type, file_size,
+				 response_data);
 }
